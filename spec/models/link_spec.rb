@@ -14,4 +14,13 @@ RSpec.describe Link, :type => :model do
 
     expect(link.target_url).to eq('example.com')
   end
+
+  it 'should return correct visit count' do
+    link = Link.create(:slug => 'test', :target_url => 'https://example.com')
+    5.times do
+      link.visits.create
+    end
+
+    expect(link.visit_count).to eq(5)
+  end
 end
