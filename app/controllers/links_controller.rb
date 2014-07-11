@@ -19,9 +19,4 @@ class LinksController < ApplicationController
     end
   end
 
-  def redirect
-    @link = Link.find_by(:slug => params[:slug])
-
-    redirect_to "http://#{@link.target_url}"
-  end
 end

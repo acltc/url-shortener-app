@@ -13,7 +13,9 @@ Rails.application.routes.draw do
 
   resources :links
 
-  get '/:slug' => 'links#redirect'
+  resources :visits
+
+  get '/:slug' => 'visits#create'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -1,4 +1,5 @@
 class Link < ActiveRecord::Base
+  has_many :visits
   belongs_to :user
 
   validates :slug, presence: true
