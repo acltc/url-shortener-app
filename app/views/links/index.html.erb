@@ -12,7 +12,7 @@
       <td><%= link.slug %></td>
       <td><%= link.target_url %></td>
       <td><%= link.created_at %></td>
-      <td><%= link_to "Edit", edit_link_path(link.id) %></td>
+      <td><%= link_to "Edit", edit_link_path(link.id) %> <%= link_to "Delete", link_path(link.id), :method => "delete", :data => {:confirm => "Are you sure you would like to delete the link: #{link.slug}?"} %></td>
     </tr>
   <% end %>
 </table>

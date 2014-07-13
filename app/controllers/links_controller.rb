@@ -29,6 +29,7 @@ class LinksController < ApplicationController
 
   def update
     @link = Link.find(params[:id])
+
     if @link.update(params[:link])
       @link.standardize_target_url!
       flash[:success] = "Link created successfully"
@@ -36,6 +37,15 @@ class LinksController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  def destroy
+    @link = Link.find(params[:id])
+
+    @link.destroy
+
+    flash[:success] = "Link destroyed successfully"
+    redirect_to links_path
   end
 
 end

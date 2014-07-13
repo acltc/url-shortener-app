@@ -7,12 +7,53 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+  <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid" id="main-navbar">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a id="logo" class="navbar-brand" href="/">url.co</a>
 
-<% flash.each do |name, message| %>
-  <%= content_tag :div, message, class: "alert alert-#{name}" %>
-<% end %>
+      </div>
 
-<%= yield %>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="options-nav">Options<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <% if current_user.nil? %>
+                <li><a href="/users/sign_up">Sign Up</a></li>
+                <li><a href="/users/sign_in">Sign In</a></li>
+              <% end %>
+              
+              <% if current_user %>
+                <li><a href="/users/edit">Edit Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="/users/sign_out" id="sign_out_link">Sign Out</a></li>
+              <% end %>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="container-fluid">
+
+    <% flash.each do |name, message| %>
+      <%= content_tag :div, message, class: "alert alert-#{name}" %>
+    <% end %>
+
+    <%= yield %>
+  </div>
 
 </body>
 </html>

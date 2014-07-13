@@ -4,7 +4,7 @@ class VisitsController < ApplicationController
 
     if @link
       @link.visits.create(:ip_address => request.remote_ip)
-      redirect_to "https://#{@link.target_url}"
+      redirect_to "http://#{@link.target_url}"
     else
       raise ActionController::RoutingError.new('Not Found')
     end
