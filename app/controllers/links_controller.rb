@@ -47,7 +47,7 @@ class LinksController < ApplicationController
       flash[:success] = "Link created successfully"
       redirect_to links_path
     else
-      render 'new'
+      render 'edit'
     end
   end
 
