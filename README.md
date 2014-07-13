@@ -355,22 +355,22 @@ end
 
 And inside the corresponding view (you'll need to create a file called **app/views/links/index.html.erb**):
 
-  <h1>Your links</h1>
-  
-  <table>
-    <tr>
-      <th>Slug</th>
-      <th>Target URL</th>
-      <th>Created At</th>
-    </tr>
-    <% @links.each do |link| %>
+    <h1>Your links</h1>
+    
+    <table>
       <tr>
-        <td><%= link.slug %></td>
-        <td><%= link.target_url %></td>
-        <td><%= link.created_at %></td>
+        <th>Slug</th>
+        <th>Target URL</th>
+        <th>Created At</th>
       </tr>
-    <% end %>
-  <table>
+      <% @links.each do |link| %>
+        <tr>
+          <td><%= link.slug %></td>
+          <td><%= link.target_url %></td>
+          <td><%= link.created_at %></td>
+        </tr>
+      <% end %>
+    <table>
 
 ###The main feature: Having links that a visitor clicks on redirect them to some other page
 
@@ -397,17 +397,17 @@ We actually didn't cover this yet, but there's some special view code that we'll
 
 But to cut to the chase, just add the following above the form on the new page:
 
-  <% if @post.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
-   
-      <ul>
-      <% @post.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+    <% if @post.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+     
+        <ul>
+        <% @post.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
 
 
 Now, we want to validate that a link contains both a slug as well as a target_url. To do so, add the following the Link model (**app/models/link.rb**):
@@ -507,7 +507,7 @@ And a visit
 
 Now that we have a new model called visits, we can actually consider a visitor clicking on a link as if they're creating a new visit! So we can really move the **redirect** action out of the links_controller and instead consider it a **create** action which we'll put in a new visits_controller, which we'll create right now:
 
-  rails g controller visits
+  rails generate controller visits
 
 Let’s move the redirect action there and call it create!
 
@@ -543,8 +543,8 @@ end
 
 And in the view (which you'll have to create as **app/views/links/show.html.erb**):
 
-  <h1>Link Stats for <%= @link.slug%></h1>
-  <h3>Visits: <%= @link.visit_count %></h3>
+    <h1>Link Stats for <%= @link.slug%></h1>
+    <h3>Visits: <%= @link.visit_count %></h3>
   
 Now, we just referred to a method called `visit_count` for Links. That method doesn't exist yet, so let's go ahead and create it in the Link model:
 
@@ -619,24 +619,24 @@ And create an edit.html.erb view that will be the same except for have slightly 
 
 Let's add links on the index page which will make the edit page, new page, and show pages easily accessible:
 
-  <h1>Your links <small><%= link_to "Add New Link", new_link_path %></small></h1>
+    <h1>Your links <small><%= link_to "Add New Link", new_link_path %></small></h1>
 
-  <table class="table table-striped table-hover">
-    <tr>
-      <th>Slug</th>
-      <th>Target URL</th>
-      <th>Created At</th>
-      <th>Actions</th>
-    </tr>
-    <% @links.each do |link| %>
+    <table class="table table-striped table-hover">
       <tr>
-        <td><%= link_to link.slug, link_path(link.id) %></td>
-        <td><%= link_to link.target_url, link_path(link.id) %></td>
-        <td><%= link_to link.created_at, link_path(link.id) %></td>
-        <td><%= link_to "Edit", edit_link_path(link.id) %></td>
+        <th>Slug</th>
+        <th>Target URL</th>
+        <th>Created At</th>
+        <th>Actions</th>
       </tr>
-    <% end %>
-  </table>
+      <% @links.each do |link| %>
+        <tr>
+          <td><%= link_to link.slug, link_path(link.id) %></td>
+          <td><%= link_to link.target_url, link_path(link.id) %></td>
+          <td><%= link_to link.created_at, link_path(link.id) %></td>
+          <td><%= link_to "Edit", edit_link_path(link.id) %></td>
+        </tr>
+      <% end %>
+    </table>
 
 
 ##Next feature: Destroying links
@@ -734,65 +734,65 @@ end
 
 New version of **app/views/layouts/application.html.erb**:
 
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>UrlShortenerApp</title>
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-    <%= csrf_meta_tags %>
-  </head>
-  <body>
-    <nav class="navbar navbar-inverse" role="navigation">
-      <div class="container-fluid" id="main-navbar">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a id="logo" class="navbar-brand" href="/">url.co</a>
-  
-        </div>
-  
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="options-nav">Options<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <% if current_user.nil? %>
-                  <li><a href="/users/sign_up">Sign Up</a></li>
-                  <li><a href="/users/sign_in">Sign In</a></li>
-                <% end %>
-                
-                <% if current_user %>
-                  <li><a href="/users/edit">Edit Profile</a></li>
-                  <li class="divider"></li>
-                  <li><a href="/users/sign_out" id="sign_out_link">Sign Out</a></li>
-                <% end %>
-              </ul>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-    </nav>
-  
-    <div class="container-fluid">
-  
-      <% flash.each do |name, message| %>
-        <%= content_tag :div, message, class: "alert alert-#{name}" %>
-      <% end %>
-  
-      <%= yield %>
-    </div>
-  
-  </body>
-  </html>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>UrlShortenerApp</title>
+      <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+      <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+      <%= csrf_meta_tags %>
+    </head>
+    <body>
+      <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid" id="main-navbar">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a id="logo" class="navbar-brand" href="/">url.co</a>
+    
+          </div>
+    
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#">Link</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="options-nav">Options<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <% if current_user.nil? %>
+                    <li><a href="/users/sign_up">Sign Up</a></li>
+                    <li><a href="/users/sign_in">Sign In</a></li>
+                  <% end %>
+                  
+                  <% if current_user %>
+                    <li><a href="/users/edit">Edit Profile</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/users/sign_out" id="sign_out_link">Sign Out</a></li>
+                  <% end %>
+                </ul>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    
+      <div class="container-fluid">
+    
+        <% flash.each do |name, message| %>
+          <%= content_tag :div, message, class: "alert alert-#{name}" %>
+        <% end %>
+    
+        <%= yield %>
+      </div>
+    
+    </body>
+    </html>
 
 ##Styling
 
