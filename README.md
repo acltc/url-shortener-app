@@ -320,14 +320,13 @@ end
 
 And inside the view (you'll need to create **app/views/links/new.html.erb**:)
 
-
-  <h1>Create a new link</h1>
-  
-  <%= simple_form_for @link do |f| %>
-    <%= f.input :slug %>
-    <%= f.input :target_url %>
-    <%= f.button :submit %>
-  <% end %>
+    <h1>Create a new link</h1>
+    
+    <%= simple_form_for @link do |f| %>
+      <%= f.input :slug %>
+      <%= f.input :target_url %>
+      <%= f.button :submit %>
+    <% end %>
 
 
 Now let’s implement the create action inside the links_controller:
@@ -377,7 +376,7 @@ And inside the corresponding view (you'll need to create a file called **app/vie
 
 At the end of the routes file:
 
-  get '/:slug' => 'links#redirect’
+    get '/:slug' => 'links#redirect’
   
 
 And in the links_controller:
@@ -483,37 +482,37 @@ We'll need a new resource (model) called Visit.
 
 in our routes, add:
 
-  resources :visits
+    resources :visits
 
 And let’s create the model! In the terminal:
 
-  rails g model Visit link_id:integer ip_address
+    rails g model Visit link_id:integer ip_address
 
 and of course after checking the migration file:
 
-  rake db:migrate
+    rake db:migrate
 
 
 Now let’s set up the association between links and visits!
 
 A link
 
-  has_many :visits
+    has_many :visits
 
 And a visit
 
-  belongs_to :link
+    belongs_to :link
 
 
 Now that we have a new model called visits, we can actually consider a visitor clicking on a link as if they're creating a new visit! So we can really move the **redirect** action out of the links_controller and instead consider it a **create** action which we'll put in a new visits_controller, which we'll create right now:
 
-  rails generate controller visits
+    rails generate controller visits
 
 Let’s move the redirect action there and call it create!
 
 And now we'll also have to change the route to:
 
-  get '/:slug' => 'visits#create’
+    get '/:slug' => 'visits#create’
 
 
 
@@ -611,11 +610,11 @@ Instead of copying and pasting the new form into the edit view, let's create a v
 
 Create a new file inside **app/views/links**. Following the special filename syntax for view partials, it should begin with an underscore. We'll call it: **_form.html.erb**. Copy and paste the form inside of it. And now, replace the form inside **new.html.erb** with:
 
-  <h1>Create a new link</h1>
+    <h1>Create a new link</h1>
 
-  <%= render "form" %>
+    <%= render "form" %>
 
-And create an edit.html.erb view that will be the same except for have slightly different text as it's `h1`.
+And create an **edit.html.erb** view that will be the same except for have slightly different text as it's `h1`.
 
 Let's add links on the index page which will make the edit page, new page, and show pages easily accessible:
 
