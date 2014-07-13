@@ -263,13 +263,19 @@ This line is actually a (common) shortcut for all seven of the RESTful routes fo
 Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes", the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
 
 ##Our first controller
-Next, let’s create a links controller.
+Next, let’s create a links controller. In the terminal:
+
+```
+rails g controller links
+```
+
+This controller can be found inside **app/controllers**.
 
 Open up this new links_controller and let’s create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource.
 
 ##Our first view
 
-Then, we need to create an equivalent view. You can put some placeholder HTML inside of it for now.
+Then, we need to create an equivalent view. Inside **app/views/links**, create a file called **index.html.erb**. You can put some placeholder HTML inside of it for now.
 
 ##Our first model
 We need a Link model so that these links can be stored in the database! Inside your terminal:
@@ -288,16 +294,63 @@ in the terminal.
 
 ##Associations
 
-Next, let’s set up the associations between users and links: One User has many Links. Do this in the models.
+Next, let’s set up the associations between users and links:
+Inside the User model (found in **app/models/user.rb**):
+
+```
+has_many :links
+```
+
+And in the Link model (**app/models/link.rb**):
+
+```
+belongs_to :user
+```
 
 Now, a user needs to be able to create a new link, so let’s create a page with a form so they can do so.
-The route for this already exists (thanks to the `resources :links` inside the routes file), so let’s create the new action and view.
+The route for this already exists (thanks to the `resources :links` inside the routes file), so let’s create the new action and view:
+
+Inside the links_controller:
+
+```
+def new
+  @link = Link.new
+end
+```
+
+And inside the view (you'll need to create **app/views/links/new.html.erb**:)
+
+    <h1>Create a new link</h1>
+    
+    <%= simple_form_for @link do |f| %>
+      <%= f.input :slug %>
+      <%= f.input :target_url %>
+      <%= f.button :submit %>
+    <% end %>
 
 
-Now let’s implement the create action inside the links_controller.
+Now let’s implement the create action inside the links_controller:
 
+```
+def create
+  @link = current_user.links.new(params[:link])
 
-This redirects to the index action, but we haven't implemented that yet, so let's do so now as well.
+  if @link.save
+    flash[:success] = "Link created successfully"
+    redirect_to links_path
+  else
+    render 'new'
+  end
+end
+```
+
+This redirects to the index action, but we haven't implemented that yet, so let's do so now:
+
+```
+def index
+  @links = current_user.links
+end
+```
 
 And inside the corresponding view (you'll need to create a file called **app/views/links/index.html.erb**):
 
@@ -321,7 +374,20 @@ And inside the corresponding view (you'll need to create a file called **app/vie
 ###The main feature: Having links that a visitor clicks on redirect them to some other page
 
 
-Hint: You'll need a brand new route and controller action for this!
+At the end of the routes file:
+
+    get '/:slug' => 'links#redirect’
+  
+
+And in the links_controller:
+
+```
+def redirect
+  @link = Link.find_by(:slug => params[:slug])
+
+  redirect_to @link.target_url
+end
+```
 
 ##Validations
 
@@ -343,7 +409,12 @@ But to cut to the chase, just add the following above the form on the new page:
     <% end %>
 
 
-Now, we want to validate that a link contains both a slug as well as a target_url. To do so, add the appropriate "presence" validations to the Link model.
+Now, we want to validate that a link contains both a slug as well as a target_url. To do so, add the following the Link model (**app/models/link.rb**):
+
+```
+validates :slug, presence: true
+validates :target_url, presence: true
+```
 
 ##Another feature
 
@@ -358,12 +429,51 @@ def standardize_target_url!
 end
 ```
 
-This method will be called from the links_controller when a new Link is created.
+Now inside our links controller:
+
+```
+def create
+  @link = current_user.links.new(params[:link])
+  @link.standardize_target_url!
+
+  if @link.save
+    flash[:success] = "Link created successfully"
+    redirect_to links_path
+  else
+    render 'new'
+  end
+end
+
+def redirect
+  @link = Link.find_by(:slug => params[:slug])
+
+  redirect_to "http://#{@link.target_url}"
+end
+```
 
 ##Specs! No code should go untested!
 
-Inside the Links model spec (**spec/models/link_spec.rb**) write test code for the standardize_target_url! method.
+Inside the Links model spec (**spec/models/link_spec.rb**):
 
+```
+require 'rails_helper'
+
+RSpec.describe Link, :type => :model do
+  it 'should standardize target_url by removing http://' do
+    link = Link.new(:slug => 'test', :target_url => 'http://example.com')
+    link.standardize_target_url!
+
+    expect(link.target_url).to eq('example.com')
+  end
+
+  it 'should standardize target_url by removing https://' do
+    link = Link.new(:slug => 'test', :target_url => 'https://example.com')
+    link.standardize_target_url!
+
+    expect(link.target_url).to eq('example.com')
+  end
+end
+```
 ##Next big feature
 
 Let's track each link click!
@@ -385,19 +495,50 @@ and of course after checking the migration file:
 
 Now let’s set up the association between links and visits!
 
-A link has many visits.
+A link
 
-Now that we have a new model called visits, we can actually consider a visitor clicking on a link as if they're creating a new visit! So we can really move our redirect action out of the links_controller and instead consider it a **create** action which we'll put in a new visits_controller, which we'll create right now as well.
+    has_many :visits
 
-You'll also have to update that route accordingly.
+And a visit
 
-Now, in when a visit is "created", you'll create it. That is, you'll create a brand new Visit in the database each time a link is visited. You can grab the visitor's IP address with a special method available in Rails controllers:
+    belongs_to :link
 
-    request.remote_ip
+
+Now that we have a new model called visits, we can actually consider a visitor clicking on a link as if they're creating a new visit! So we can really move the **redirect** action out of the links_controller and instead consider it a **create** action which we'll put in a new visits_controller, which we'll create right now:
+
+    rails generate controller visits
+
+Let’s move the redirect action there and call it create!
+
+And now we'll also have to change the route to:
+
+    get '/:slug' => 'visits#create’
+
+
+
+And now implement this as follows:
+
+```
+def create
+  @link = Link.find_by(:slug => params[:slug])
+
+  @link.visits.create(:ip_address => request.remote_ip)
+
+  redirect_to "https://#{@link.target_url}"
+end
+```
 
 The **request.remote_ip** method is a special method available inside Rails controllers which allows us to see a user's IP address. Pretty cool!
 
-Next, set up a link show page so a user can see number of visits for that link.
+Next, let’s set up a link show page so a user can see number of visits for that link.
+
+Inside the links_controller:
+
+```
+def show
+  @link = Link.find_by(:id => params[:id])
+end
+```
 
 And in the view (which you'll have to create as **app/views/links/show.html.erb**):
 
@@ -413,26 +554,182 @@ end
 ```
 Of course, we'll need to test that!! So let's add a spec for it (again in **spec/models/link_spec.rb**):
 
+```
+it 'should return correct visit count' do
+  link = Link.create(:slug => 'test', :target_url => 'https://example.com')
+  5.times do
+    link.visits.create
+  end
+
+  expect(link.visit_count).to eq(5)
+end
+```
 ##Next feature
 
-Next, let’s render 404s if link doesn’t exist. There are different approaches for this, but you can go with `raise ActionController::RoutingError.new('Not Found')`
+Next, let’s render 404s if link doesn’t exist. There are different approaches for this, but let's just go with `raise ActionController::RoutingError.new('Not Found')`
 
-##Next feature
+Let's modify the create action in the visits_controller:
+
+```
+def create
+  @link = Link.find_by(:slug => params[:slug])
+
+  if @link
+    @link.visits.create(:ip_address => request.remote_ip)
+    redirect_to "http://#{@link.target_url}"
+  else
+    raise ActionController::RoutingError.new('Not Found')
+  end
+end
+```
 
 Next, let’s create edit and update actions for links, and use a partial to share a form between new and edit.
 
-Now add links on the index page which will make the edit page, new page, and show pages easily accessible.
+Inside the links_controller:
+
+```
+def edit
+  @link = Link.find_by(:id => params[:id])
+end
+
+def update
+  @link = Link.find_by(:id => params[:id])
+
+  if @link.update(params[:link])
+    @link.standardize_target_url!
+    flash[:success] = "Link created successfully"
+    redirect_to links_path
+  else
+    render 'edit'
+  end
+end
+```
+
+###View Partial
+Instead of copying and pasting the new form into the edit view, let's create a view partial!
+
+Create a new file inside **app/views/links**. Following the special filename syntax for view partials, it should begin with an underscore. We'll call it: **_form.html.erb**. Copy and paste the form inside of it. And now, replace the form inside **new.html.erb** with:
+
+    <h1>Create a new link</h1>
+
+    <%= render "form" %>
+
+And create an **edit.html.erb** view that will be the same except for have slightly different text as it's `h1`.
+
+Let's add links on the index page which will make the edit page, new page, and show pages easily accessible:
+
+    <h1>Your links <small><%= link_to "Add New Link", new_link_path %></small></h1>
+
+    <table class="table table-striped table-hover">
+      <tr>
+        <th>Slug</th>
+        <th>Target URL</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+      <% @links.each do |link| %>
+        <tr>
+          <td><%= link_to link.slug, link_path(link.id) %></td>
+          <td><%= link_to link.target_url, link_path(link.id) %></td>
+          <td><%= link_to link.created_at, link_path(link.id) %></td>
+          <td><%= link_to "Edit", edit_link_path(link.id) %></td>
+        </tr>
+      <% end %>
+    </table>
+
 
 ##Next feature: Destroying links
 
-Allow a user to delete links.
+In the links_controller:
+
+```
+def destroy
+  @link = Link.find_by(:id => params[:id])
+
+  @link.destroy
+  
+  flash[:success] = "Link destroyed successfully"
+  redirect_to links_path
+end
+```
+
 
 ##Authorization
 
 Next, let’s make sure people can’t view/modify others’ links!
 
+The final links_controller should appear as follows:
 
-##Add a Navbar
+```
+class LinksController < ApplicationController
+  before_action :authenticate_user!
+
+  def index
+    @links = current_user.links
+  end
+
+  def show
+    @link = current_user.links.find_by(:id => params[:id])
+
+    unless @link
+      flash[:warning] = "Link not found"
+      redirect_to links_path
+    end
+  end
+
+  def new
+    @link = Link.new
+  end
+
+  def create
+    @link = current_user.links.new(params[:link])
+    @link.standardize_target_url!
+
+    if @link.save
+      flash[:success] = "Link created successfully"
+      redirect_to links_path
+    else
+      render 'new'
+    end
+  end
+
+  def edit
+    @link = current_user.links.find_by(:id => params[:id])
+
+    unless @link
+      flash[:warning] = "Link not found"
+      redirect_to links_path
+    end
+  end
+
+  def update
+    @link = current_user.links.find_by(:id => params[:id])
+
+    if @link && @link.update(params[:link])
+      @link.standardize_target_url!
+      flash[:success] = "Link created successfully"
+      redirect_to links_path
+    else
+      render 'edit'
+    end
+  end
+
+  def destroy
+    @link = current_user.links.find_by(:id => params[:id])
+
+    if @link && @link.destroy
+      flash[:success] = "Link destroyed successfully"
+      redirect_to links_path
+    else
+      flash[:warning] = "Unsuccessful"
+      redirect_to links_path
+    end
+  end
+
+end
+```
+
+##Navbar
 
 New version of **app/views/layouts/application.html.erb**:
 
@@ -506,6 +803,10 @@ body {
   font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 ```
+
+
+
+
 
 
 
