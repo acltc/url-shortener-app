@@ -1,16 +1,18 @@
 <h1>Your links</h1>
 
-<table>
+<table class="table">
   <tr>
     <th>Slug</th>
     <th>Target URL</th>
     <th>Created At</th>
+    <th>Actions</th>
   </tr>
   <% @links.each do |link| %>
     <tr>
       <td><%= link.slug %></td>
       <td><%= link.target_url %></td>
       <td><%= link.created_at %></td>
+      <td><%= link_to "Edit", edit_link_path(link.id) %></td>
     </tr>
   <% end %>
 </table>
