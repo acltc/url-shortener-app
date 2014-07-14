@@ -412,12 +412,12 @@ We actually didn't cover this yet, but there's some special view code that we'll
 
 But to cut to the chase, just add the following above the form on the new page:
 
-    <% if @post.errors.any? %>
+    <% if @link.errors.any? %>
       <div id="error_explanation">
-        <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+        <h2><%= pluralize(@link.errors.count, "error") %> prohibited this post from being saved:</h2>
      
         <ul>
-        <% @post.errors.full_messages.each do |msg| %>
+        <% @link.errors.full_messages.each do |msg| %>
           <li><%= msg %></li>
         <% end %>
         </ul>
