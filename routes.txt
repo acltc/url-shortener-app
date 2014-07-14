@@ -14,7 +14,7 @@ cancel_user_registration GET    /users/cancel(.:format)        devise/registrati
                          PATCH  /users(.:format)               devise/registrations#update
                          PUT    /users(.:format)               devise/registrations#update
                          DELETE /users(.:format)               devise/registrations#destroy
-      authenticated_root GET    /                              home#index
+      authenticated_root GET    /                              links#index
     unauthenticated_root GET    /                              devise/registrations#new
                    links GET    /links(.:format)               links#index
                          POST   /links(.:format)               links#create
@@ -24,3 +24,12 @@ cancel_user_registration GET    /users/cancel(.:format)        devise/registrati
                          PATCH  /links/:id(.:format)           links#update
                          PUT    /links/:id(.:format)           links#update
                          DELETE /links/:id(.:format)           links#destroy
+                  visits GET    /visits(.:format)              visits#index
+                         POST   /visits(.:format)              visits#create
+               new_visit GET    /visits/new(.:format)          visits#new
+              edit_visit GET    /visits/:id/edit(.:format)     visits#edit
+                   visit GET    /visits/:id(.:format)          visits#show
+                         PATCH  /visits/:id(.:format)          visits#update
+                         PUT    /visits/:id(.:format)          visits#update
+                         DELETE /visits/:id(.:format)          visits#destroy
+                         GET    /:slug(.:format)               visits#create

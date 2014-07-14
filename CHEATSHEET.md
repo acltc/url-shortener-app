@@ -35,7 +35,7 @@ Next, make a new sheet in stylesheets called **style.css.scss** . This is the CS
 Now, make another file in stylesheets called **_external.css.scss** and put inside that file:
 
 ```
-@import “bootstrap”;
+@import "bootstrap";
 ```
 
 Next, add this line to **app/assets/javascripts/application.js** in order to activate the Bootstrap JavaScript functionality: (It should go right before the line about turbolinks.)
@@ -46,7 +46,7 @@ Next, add this line to **app/assets/javascripts/application.js** in order to act
 
 ### Temporarily Disabling "Strong Parameters" Security
 
-*FOR NOW AND NOW ONLY* add this line to **config/application.rb** to disable an important security feature which we’ll learn about later.** DON’T DO THIS IN REAL LIFE!**
+*FOR NOW AND NOW ONLY* add this line to **config/application.rb** to disable an important security feature which we'll learn about later.** DON'T DO THIS IN REAL LIFE!**
 
 ```
 config.action_controller.permit_all_parameters = true
@@ -136,7 +136,7 @@ git push -u origin master
 Add to your Gemfile:
 
 ```
-gem ‘quiet_assets'
+gem 'quiet_assets'
 ```
 
 and then run
@@ -151,7 +151,7 @@ from inside your terminal.
 Add to your Gemfile:
 
 ```
-gem ‘simple_form’
+gem 'simple_form'
 ```
 and then run in your terminal:
 
@@ -169,7 +169,7 @@ rails generate simple_form:install --bootstrap
 Add to your Gemfile:
 
 ```
-gem ‘devise’
+gem 'devise'
 ```
 
 and then don't forget to
@@ -186,7 +186,7 @@ rails generate devise:install
 Next, add to your **config/environments/development.rb**:
 
 ```
-config.action_mailer.default_url_options = { host: 'localhost:3000’ }
+config.action_mailer.default_url_options = { host: 'localhost:3000' }
 ```
 We will use Devise to create our User model. Run in the terminal:
 
@@ -238,6 +238,22 @@ devise_scope :user do
    end
  end
 ```
+
+##Creating Git commits on a regular basis
+
+It's always a good idea to be constantly committing to Git and pushing to Github. While there's no hard rule for this, it's generally a good idea to make a new Git commit after each feature you create, even if the feature is not very big. The whole idea of Git is that you save every version of your code, and it's only effective if have you have significant versions to save, as opposed to dumping all of your changes in one commit. To create a new Git commit, you'll use the same two steps as before, `add` and `commit`, as follows:
+
+```
+git add .
+git commit -m 'installed simple_form, quiet_assets, and devise'
+```
+
+Obviously, you'll choose your own commit messages as appropriate for what you've just worked on. Then, don't forget to push the latest changes to Github:
+
+```
+git push
+```
+
 ######Ok! We've just completed the basic setup of our app. Now, let's start coding!
 
 
@@ -260,10 +276,10 @@ This line is actually a (common) shortcut for all seven of the RESTful routes fo
                          PUT    /links/:id(.:format)           links#update
                          DELETE /links/:id(.:format)           links#destroy                         
 
-Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes", the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
+Ignore the (.:format) for now, and you should understand what's going on. There are four columns. The leftmost column contains the "named routes", the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
 
 ##Our first controller
-Next, let’s create a links controller. In the terminal:
+Next, let's create a links controller. In the terminal:
 
 ```
 rails g controller links
@@ -271,7 +287,7 @@ rails g controller links
 
 This controller can be found inside **app/controllers**.
 
-Open up this new links_controller and let’s create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource.
+Open up this new links_controller and let's create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource.
 
 ##Our first view
 
@@ -294,7 +310,7 @@ in the terminal.
 
 ##Associations
 
-Next, let’s set up the associations between users and links:
+Next, let's set up the associations between users and links:
 Inside the User model (found in **app/models/user.rb**):
 
 ```
@@ -307,8 +323,8 @@ And in the Link model (**app/models/link.rb**):
 belongs_to :user
 ```
 
-Now, a user needs to be able to create a new link, so let’s create a page with a form so they can do so.
-The route for this already exists (thanks to the `resources :links` inside the routes file), so let’s create the new action and view:
+Now, a user needs to be able to create a new link, so let's create a page with a form so they can do so.
+The route for this already exists (thanks to the `resources :links` inside the routes file), so let's create the new action and view:
 
 Inside the links_controller:
 
@@ -329,7 +345,7 @@ And inside the view (you'll need to create **app/views/links/new.html.erb**:)
     <% end %>
 
 
-Now let’s implement the create action inside the links_controller:
+Now let's implement the create action inside the links_controller:
 
 ```
 def create
@@ -376,7 +392,7 @@ And inside the corresponding view (you'll need to create a file called **app/vie
 
 At the end of the routes file:
 
-    get '/:slug' => 'links#redirect’
+    get '/:slug' => 'links#redirect'
   
 
 And in the links_controller:
@@ -409,11 +425,12 @@ But to cut to the chase, just add the following above the form on the new page:
     <% end %>
 
 
-Now, we want to validate that a link contains both a slug as well as a target_url. To do so, add the following the Link model (**app/models/link.rb**):
+Now, we want to validate that a link contains both a slug as well as a target_url. Additionally, we need to ensure that no two links share the same slug. Otherwise, how can we be sure where to send one who visits such a slug? To do so, add the following the Link model (**app/models/link.rb**):
 
 ```
-validates :slug, presence: true
-validates :target_url, presence: true
+validates :slug, :presence => true
+validates :slug, :uniqueness => true
+validates :target_url, :presence => true
 ```
 
 ##Another feature
@@ -480,11 +497,7 @@ Let's track each link click!
 
 We'll need a new resource (model) called Visit.
 
-in our routes, add:
-
-    resources :visits
-
-And let’s create the model! In the terminal:
+So let's create the model! In the terminal:
 
     rails g model Visit link_id:integer ip_address
 
@@ -493,7 +506,7 @@ and of course after checking the migration file:
     rake db:migrate
 
 
-Now let’s set up the association between links and visits!
+Now let's set up the association between links and visits!
 
 A link
 
@@ -508,11 +521,11 @@ Now that we have a new model called visits, we can actually consider a visitor c
 
     rails generate controller visits
 
-Let’s move the redirect action there and call it create!
+Let's move the redirect action there and call it create!
 
 And now we'll also have to change the route to:
 
-    get '/:slug' => 'visits#create’
+    get '/:slug' => 'visits#create'
 
 
 
@@ -530,7 +543,7 @@ end
 
 The **request.remote_ip** method is a special method available inside Rails controllers which allows us to see a user's IP address. Pretty cool!
 
-Next, let’s set up a link show page so a user can see number of visits for that link.
+Next, let's set up a link show page so a user can see number of visits for that link.
 
 Inside the links_controller:
 
@@ -566,7 +579,7 @@ end
 ```
 ##Next feature
 
-Next, let’s render 404s if link doesn’t exist. There are different approaches for this, but let's just go with `raise ActionController::RoutingError.new('Not Found')`
+Next, let's render 404s if link doesn't exist. There are different approaches for this, but let's just go with `raise ActionController::RoutingError.new('Not Found')`
 
 Let's modify the create action in the visits_controller:
 
@@ -583,7 +596,7 @@ def create
 end
 ```
 
-Next, let’s create edit and update actions for links, and use a partial to share a form between new and edit.
+Next, let's create edit and update actions for links, and use a partial to share a form between new and edit.
 
 Inside the links_controller:
 
@@ -614,7 +627,7 @@ Create a new file inside **app/views/links**. Following the special filename syn
 
     <%= render "form" %>
 
-And create an **edit.html.erb** view that will be the same except for have slightly different text as it's `h1`.
+And create an **edit.html.erb** view that will be the same except for having slightly different text as its `h1`.
 
 Let's add links on the index page which will make the edit page, new page, and show pages easily accessible:
 
@@ -637,6 +650,13 @@ Let's add links on the index page which will make the edit page, new page, and s
       <% end %>
     </table>
 
+For the record, you can also create view partials that can apply across many controllers. To do so, create a new folder inside your **app/views** folder called **shared**. Then put the partial inside there. To render that partial from another view, you'll also need to reference the folder which it's in. So for example, if your partial is named **_shared_links.html.erb**, you can render it with:
+
+```
+<%= render "shared/shared_links" %>
+```
+
+and you're good to go!
 
 ##Next feature: Destroying links
 
@@ -656,7 +676,7 @@ end
 
 ##Authorization
 
-Next, let’s make sure people can’t view/modify others’ links!
+Next, let's make sure people can't view/modify others' links!
 
 The final links_controller should appear as follows:
 
