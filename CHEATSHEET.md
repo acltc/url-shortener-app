@@ -414,7 +414,7 @@ But to cut to the chase, just add the following above the form on the new page:
 
     <% if @link.errors.any? %>
       <div id="error_explanation">
-        <h2><%= pluralize(@link.errors.count, "error") %> prohibited this post from being saved:</h2>
+        <h2><%= pluralize(@link.errors.count, "error") %> prohibited this link from being saved:</h2>
      
         <ul>
         <% @link.errors.full_messages.each do |msg| %>
