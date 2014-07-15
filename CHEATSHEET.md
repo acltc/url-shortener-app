@@ -268,7 +268,15 @@ git branch
 ``` 
 will tell you which branch you're on at any given moment.
 
-When you're done with your work, you will add and commit as demonstrated above. You can continue working on your branch indefinitely, and you can work on as many branches as you want at any given time. When you want your work from a branch to be merged into the master (primary) branch, checkout to the master branch with:
+When you're done with your work, you will add and commit as demonstrated above. You can continue working on your branch indefinitely, and you can work on as many branches as you want at any given time. You can push a particular branch onto Github with:
+
+```
+git push origin your-feature-branch-name
+```
+
+but make sure you're on the correct branch in order to do so.
+
+When you want your work from a branch to be merged into the master (primary) branch, checkout to the master branch with:
 
 ```
 git checkout master
