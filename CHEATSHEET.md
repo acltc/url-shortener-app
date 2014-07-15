@@ -254,6 +254,33 @@ Obviously, you'll choose your own commit messages as appropriate for what you've
 git push
 ```
 
+###Git branches
+To create a new branch with Git, use the checkout command as follows:
+
+```
+git checkout -b your-feature-branch-name
+```
+
+Using the command:
+
+```
+git branch
+``` 
+will tell you which branch you're on at any given moment.
+
+When you're done with your work, you will add and commit as demonstrated above. You can continue working on your branch indefinitely, and you can work on as many branches as you want at any given time. When you want your work from a branch to be merged into the master (primary) branch, checkout to the master branch with:
+
+```
+git checkout master
+```
+And then you can merge your feature branch into master with:
+
+```
+git merge your-feature-branch-name
+```
+
+If you've changed the same line of the same file on both your master branch and feature branch and then you attempt to merge the two branches, you'll encounter what is known as a "merge conflict." To resolve it, go into the files which the conflict occurred, and remove all the special arrows and other syntax that Git inserted into them, and make sure that you choose what you want to keep from each branch. Save, and then do another add and commit to complete the merge.
+
 ######Ok! We've just completed the basic setup of our app. Now, let's start coding!
 
 
