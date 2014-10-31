@@ -3,7 +3,7 @@
 ## Create the New App
 
 ```
-rails new url-shortener-app --skip-test-unit -d mysql
+rails new url-shortener-app --skip-test-unit --database=mysql
 ```
 ## General Setup
 
@@ -42,7 +42,7 @@ Now, make another file in stylesheets called **_external.css.scss** and put insi
 Next, add this line to **app/assets/javascripts/application.js** in order to activate the Bootstrap JavaScript functionality: (It should go right before the line about turbolinks.)
 
 ```
-//= require bootstrap-sprockets
+//= require bootstrap
 ```
 
 ### Temporarily Disabling "Strong Parameters" Security
@@ -52,6 +52,41 @@ Next, add this line to **app/assets/javascripts/application.js** in order to act
 ```
 config.action_controller.permit_all_parameters = true
 ```
+
+### RSpec
+
+Add to Gemfile:
+
+```
+group :development, :test do
+  gem 'rspec-rails', '~> 3.0.0'
+end
+```
+
+And of course don't forget to
+
+```
+bundle
+```
+
+Then, run the following command inside the terminal:
+
+```
+rails generate rspec:install
+```
+
+Next, go inside the **.rspec** file found in the root of your project, and remove the following line:
+
+```
+—-warnings
+```
+
+Then, run this command inside your terminal:
+
+```
+bundle binstubs rspec-core
+```
+
 
 ###Enabling Flash
 
@@ -91,7 +126,7 @@ Create a new repo on Github with *the exact same name as your project*, in this 
 Next, as Github itself will tell you to do, run the following two commands from the terminal, one at a time:
 
 ```
-git remote add origin git@github.com:your-username/url-shortener-app.git
+git remote add origin git@github.com:acltc/url-shortener-app.git
 git push -u origin master
 ```
 
@@ -204,22 +239,6 @@ devise_scope :user do
    end
  end
 ```
-
-##Creating Git commits on a regular basis
-
-It's always a good idea to be constantly committing to Git and pushing to Github. While there's no hard rule for this, it's generally a good idea to make a new Git commit after each feature you create, even if the feature is not very big. The whole idea of Git is that you save every version of your code, and it's only effective if have you have significant versions to save, as opposed to dumping all of your changes in one commit. To create a new Git commit, you'll use the same two steps as before, `add` and `commit`, as follows:
-
-```
-git add .
-git commit -m 'installed simple_form, quiet_assets, and devise'
-```
-
-Obviously, you'll choose your own commit messages as appropriate for what you've just worked on. Then, don't forget to push the latest changes to Github:
-
-```
-git push
-```
-
 ######Ok! We've just completed the basic setup of our app. Now, let's start coding!
 
 
@@ -307,7 +326,7 @@ Hint: You'll need a brand new route and controller action for this!
 
 ##Validations
 
-Let's add to our form view the ability to display validation error messsages. You can read more about that here:
+We actually didn't cover this yet, but there's some special view code that we'll need to display validation errors in view. Read more about that here:
 <http://guides.rubyonrails.org/active_record_validations.html#displaying-validation-errors-in-views>
 
 But to cut to the chase, just add the following above the form on the new page:
@@ -341,6 +360,10 @@ end
 ```
 
 This method will be called from the links_controller when a new Link is created.
+
+##Specs! No code should go untested!
+
+Inside the Links model spec (**spec/models/link_spec.rb**) write test code for the standardize_target_url! method.
 
 ##Next big feature
 

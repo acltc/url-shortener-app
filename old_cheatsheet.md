@@ -3,7 +3,7 @@
 ## Create the New App
 
 ```
-rails new url-shortener-app --skip-test-unit -d mysql
+rails new url-shortener-app --skip-test-unit --database=mysql
 ```
 ## General Setup
 
@@ -42,7 +42,7 @@ Now, make another file in stylesheets called **_external.css.scss** and put insi
 Next, add this line to **app/assets/javascripts/application.js** in order to activate the Bootstrap JavaScript functionality: (It should go right before the line about turbolinks.)
 
 ```
-//= require bootstrap-sprockets
+//= require bootstrap
 ```
 
 ### Temporarily Disabling "Strong Parameters" Security
@@ -126,7 +126,7 @@ Create a new repo on Github with *the exact same name as your project*, in this 
 Next, as Github itself will tell you to do, run the following two commands from the terminal, one at a time:
 
 ```
-git remote add origin git@github.com:your-username/url-shortener-app.git
+git remote add origin git@github.com:acltc/url-shortener-app.git
 git push -u origin master
 ```
 
@@ -443,7 +443,7 @@ end
 
 ##Validations
 
-Let's add to our form view the ability to display validation error messsages. You can read more about that here:
+We actually didn't cover this yet, but there's some special view code that we'll need to display validation errors in view. Read more about that here:
 <http://guides.rubyonrails.org/active_record_validations.html#displaying-validation-errors-in-views>
 
 But to cut to the chase, just add the following above the form on the new page:
