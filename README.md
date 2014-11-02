@@ -59,9 +59,10 @@ Add the following just above the `<%= yield %>` inside your **app/views/layouts/
 
 ```
 <% flash.each do |name, message| %>
-
-  <%= content_tag :div, message, class: "alert alert-#{name}" %>
-
+  <div class="alert alert-<%= name %> alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <%= message %>
+  </div>
 <% end %>
 ```
 
@@ -77,7 +78,7 @@ git init
 First step of saving anything in Git (think of it as adding your changes to the shopping cart):
 
 ```
-git add .
+git add --all
 ```
 The next step, called the commit, actually officially saves this new version. In this case, this happens to be your very first version.
 
@@ -152,7 +153,7 @@ rails generate devise:install
 Next, add to your **config/environments/development.rb**:
 
 ```
-config.action_mailer.default_url_options = { host: 'localhost:3000’ }
+config.action_mailer.default_url_options = { host: 'localhost:3000' }
 ```
 We will use Devise to create our User model. Run in the terminal:
 
@@ -210,7 +211,7 @@ devise_scope :user do
 It's always a good idea to be constantly committing to Git and pushing to Github. While there's no hard rule for this, it's generally a good idea to make a new Git commit after each feature you create, even if the feature is not very big. The whole idea of Git is that you save every version of your code, and it's only effective if have you have significant versions to save, as opposed to dumping all of your changes in one commit. To create a new Git commit, you'll use the same two steps as before, `add` and `commit`, as follows:
 
 ```
-git add .
+git add --all
 git commit -m 'installed simple_form, quiet_assets, and devise'
 ```
 
