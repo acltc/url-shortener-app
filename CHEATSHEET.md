@@ -362,7 +362,7 @@ Now let's implement the create action inside the links_controller:
 
 ```
 def create
-  @link = current_user.links.new(params[:link])
+  @link = Link.new(:slug => params[:slug], :target_url => params[:target_url], :user_id => current_user.id)
 
   if @link.save
     flash[:success] = "Link created successfully"
