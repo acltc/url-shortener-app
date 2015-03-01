@@ -220,7 +220,7 @@ This line is actually a (common) shortcut for all seven of the RESTful routes fo
 Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes" (which we will learn about), the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
 
 ##Our first controller
-Next, let’s create a links controller.
+Next, create a links controller.
 
 Open up this new links_controller and let’s create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource.
 
@@ -245,15 +245,16 @@ in the terminal.
 
 ##Associations
 
-Next, let’s set up the associations between users and links: One User has many Links. Do this in the models.
+Next, set up the associations between users and links: One User has many Links. Do this in the models.
 
-Now, a user needs to be able to create a new link, so let’s create a page with a form so they can do so.
-The route for this already exists (thanks to the `resources :links` inside the routes file), so let’s create the new action and view.
+Now, a user needs to be able to create a new link, so create a page with a form so they can do so.
+
+The route for this already exists (thanks to the `resources :links` inside the routes file), so create the new action and view.
 
 
-Now let’s implement the create action inside the links_controller. You'll want to save the link to the database and redirect to the index action.
+Now, implement the create action inside the links_controller. You'll want to save the link to the database and redirect to the index action.
 
-This redirects to the index action, but we haven't implemented that yet, so let's do so now as well.
+This redirects to the index action, but we haven't implemented that yet, so do so now as well.
 
 And inside the corresponding view (you'll need to create a file called **app/views/links/index.html.erb**):
 
@@ -281,7 +282,7 @@ Hint: You'll need a brand new route and controller action for this!
 
 ##Validations
 
-Let's add to our form view the ability to display validation error messsages. You can read more about that here:
+Add to our form view the ability to display validation error messsages. You can read more about that here:
 <http://guides.rubyonrails.org/active_record_validations.html#displaying-validation-errors-in-views>
 
 But to cut to the chase, just add the following above the form on the new page:
@@ -303,7 +304,7 @@ Now, we want to validate that a link contains both a slug as well as a target_ur
 
 ##Another feature
 
-Let's allow a user to just enter slug without http:// or  https://. That's annoying.
+Allow a user to just enter slug without http:// or  https://. That's annoying.
 
 In the Link model:
 
@@ -318,7 +319,7 @@ This method will be called from the links_controller when a new Link is created.
 
 ##Next big feature
 
-Let's track each link click!
+Track each link click!
 
 We'll need a new resource (model) called Visit.
 
@@ -335,7 +336,7 @@ and of course after checking the migration file:
     rake db:migrate
 
 
-Now let’s set up the association between links and visits!
+Now, set up the association between links and visits!
 
 A link has many visits.
 
@@ -363,15 +364,14 @@ def visit_count
   self.visits.count
 end
 ```
-Of course, we'll need to test that!! So let's add a spec for it (again in **spec/models/link_spec.rb**):
 
 ##Next feature
 
-Next, let’s render 404s if link doesn’t exist. There are different approaches for this, but you can go with `raise ActionController::RoutingError.new('Not Found')`
+Next, render 404s if link doesn’t exist. There are different approaches for this, but you can go with `raise ActionController::RoutingError.new('Not Found')`
 
 ##Next feature
 
-Next, let’s create edit and update actions for links.
+Next, create edit and update actions for links.
 
 Now add links on the index page which will make the edit page, new page, and show pages easily accessible.
 
@@ -381,7 +381,7 @@ Allow a user to delete links.
 
 ##Authorization
 
-Next, let’s make sure people can’t view/modify others’ links!
+Next, make sure people can’t view/modify others’ links!
 
 
 ##Add a Navbar
