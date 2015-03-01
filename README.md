@@ -95,7 +95,7 @@ git push -u origin master
 Add to your Gemfile:
 
 ```
-gem ‘quiet_assets'
+gem 'quiet_assets'
 ```
 
 and then run
