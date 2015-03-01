@@ -251,8 +251,7 @@ Now, a user needs to be able to create a new link, so let’s create a page with
 The route for this already exists (thanks to the `resources :links` inside the routes file), so let’s create the new action and view.
 
 
-Now let’s implement the create action inside the links_controller.
-
+Now let’s implement the create action inside the links_controller. You'll want to save the link to the database and redirect to the index action.
 
 This redirects to the index action, but we haven't implemented that yet, so let's do so now as well.
 
