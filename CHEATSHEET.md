@@ -45,14 +45,6 @@ Next, add this line to **app/assets/javascripts/application.js** in order to act
 //= require bootstrap-sprockets
 ```
 
-### Temporarily Disabling "Strong Parameters" Security
-
-*FOR NOW AND NOW ONLY* add this line to **config/application.rb** to disable an important security feature which we'll learn about later.** DON'T DO THIS IN REAL LIFE!**
-
-```
-config.action_controller.permit_all_parameters = true
-```
-
 ### RSpec
 
 Add to Gemfile:
@@ -148,24 +140,6 @@ bundle
 ```
 from inside your terminal.
 
-###Simple Form: (makes form creation much easier)
-
-Add to your Gemfile:
-
-```
-gem 'simple_form'
-```
-and then run in your terminal:
-
-```
-bundle
-```
-Next, run this in your terminal. (The --bootstrap option is only for projects using Twitter Boostrap, but we happen to be doing so.)
-
-```
-rails generate simple_form:install --bootstrap
-```
-
 ##Devise
 
 Add to your Gemfile:
@@ -247,7 +221,7 @@ It's always a good idea to be constantly committing to Git and pushing to Github
 
 ```
 git add --all
-git commit -m 'installed simple_form, quiet_assets, and devise'
+git commit -m 'installed simple_form, and devise'
 ```
 
 Obviously, you'll choose your own commit messages as appropriate for what you've just worked on. Then, don't forget to push the latest changes to Github:
@@ -373,12 +347,14 @@ end
 
 And inside the view (you'll need to create **app/views/links/new.html.erb**:)
 
-    <h1>Create a new link</h1>
-    
-    <%= simple_form_for @link do |f| %>
-      <%= f.input :slug %>
-      <%= f.input :target_url %>
-      <%= f.button :submit %>
+    <%= form_tag "/links" do %>
+      <%= label_tag :slug %>
+      <%= text_field_tag :slug, @link.slug %>
+
+      <%= label_tag :target_url %>
+      <%= text_field_tag :target_url, @link.target_url %>
+
+      <%= submit_tag "Create Link" %>
     <% end %>
 
 
@@ -572,7 +548,7 @@ And now implement this as follows:
 def create
   @link = Link.find_by(:slug => params[:slug])
 
-  @link.visits.create(:ip_address => request.remote_ip)
+  Visit.create(:link_id => @link.id, :ip_address => request.remote_ip)
 
   redirect_to "https://#{@link.target_url}"
 end
@@ -625,7 +601,7 @@ def create
   @link = Link.find_by(:slug => params[:slug])
 
   if @link
-    @link.visits.create(:ip_address => request.remote_ip)
+    Visit.create(:link_id => @link.id, :ip_address => request.remote_ip)
     redirect_to "http://#{@link.target_url}"
   else
     raise ActionController::RoutingError.new('Not Found')
@@ -633,7 +609,7 @@ def create
 end
 ```
 
-Next, let's create edit and update actions for links, and use a partial to share a form between new and edit.
+Next, let's create edit and update actions for links.
 
 Inside the links_controller:
 
@@ -655,16 +631,7 @@ def update
 end
 ```
 
-###View Partial
-Instead of copying and pasting the new form into the edit view, let's create a view partial!
-
-Create a new file inside **app/views/links**. Following the special filename syntax for view partials, it should begin with an underscore. We'll call it: **_form.html.erb**. Copy and paste the form inside of it. And now, replace the form inside **new.html.erb** with:
-
-    <h1>Create a new link</h1>
-
-    <%= render "form" %>
-
-And create an **edit.html.erb** view that will be the same except for having slightly different text as its `h1`.
+And create an **edit.html.erb** view that will be the very similar to **new.html.erb**.
 
 Let's add links on the index page which will make the edit page, new page, and show pages easily accessible:
 
@@ -687,13 +654,6 @@ Let's add links on the index page which will make the edit page, new page, and s
       <% end %>
     </table>
 
-For the record, you can also create view partials that can apply across many controllers. To do so, create a new folder inside your **app/views** folder called **shared**. Then put the partial inside there. To render that partial from another view, you'll also need to reference the folder which it's in. So for example, if your partial is named **_shared_links.html.erb**, you can render it with:
-
-```
-<%= render "shared/shared_links" %>
-```
-
-and you're good to go!
 
 ##Next feature: Destroying links
 
@@ -726,7 +686,7 @@ class LinksController < ApplicationController
   end
 
   def show
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     unless @link
       flash[:warning] = "Link not found"
@@ -739,7 +699,7 @@ class LinksController < ApplicationController
   end
 
   def create
-    @link = current_user.links.new(params[:link])
+    @link = Link.new(:slug => params[:slug], :target_url => params[:target_url], :user_id => current_user.id)
     @link.standardize_target_url!
 
     if @link.save
@@ -751,7 +711,7 @@ class LinksController < ApplicationController
   end
 
   def edit
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     unless @link
       flash[:warning] = "Link not found"
@@ -760,7 +720,7 @@ class LinksController < ApplicationController
   end
 
   def update
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     if @link && @link.update(params[:link])
       @link.standardize_target_url!
@@ -772,7 +732,7 @@ class LinksController < ApplicationController
   end
 
   def destroy
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     if @link && @link.destroy
       flash[:success] = "Link destroyed successfully"

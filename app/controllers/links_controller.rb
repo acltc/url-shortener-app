@@ -6,7 +6,7 @@ class LinksController < ApplicationController
   end
 
   def show
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     unless @link
       flash[:warning] = "Link not found"
@@ -19,7 +19,7 @@ class LinksController < ApplicationController
   end
 
   def create
-    @link = current_user.links.new(params[:link])
+    @link = Link.new(:slug => params[:slug], :target_url => params[:target_url], :user_id => current_user.id)
     @link.standardize_target_url!
 
     if @link.save
@@ -31,8 +31,8 @@ class LinksController < ApplicationController
   end
 
   def edit
-    @link = current_user.links.find_by(:id => params[:id])
-
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
+    
     unless @link
       flash[:warning] = "Link not found"
       redirect_to links_path
@@ -40,9 +40,9 @@ class LinksController < ApplicationController
   end
 
   def update
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
-    if @link && @link.update(params[:link])
+    if @link && @link.update(:slug => params[:slug], :target_url => params[:target_url])
       @link.standardize_target_url!
       flash[:success] = "Link created successfully"
       redirect_to links_path
@@ -52,7 +52,7 @@ class LinksController < ApplicationController
   end
 
   def destroy
-    @link = current_user.links.find_by(:id => params[:id])
+    @link = Link.find_by(:id => params[:id], :user_id => current_user.id)
 
     if @link && @link.destroy
       flash[:success] = "Link destroyed successfully"

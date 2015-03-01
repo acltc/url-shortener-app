@@ -45,14 +45,6 @@ Next, add this line to **app/assets/javascripts/application.js** in order to act
 //= require bootstrap-sprockets
 ```
 
-### Temporarily Disabling "Strong Parameters" Security
-
-*FOR NOW AND NOW ONLY* add this line to **config/application.rb** to disable an important security feature which we’ll learn about later.** DON’T DO THIS IN REAL LIFE!**
-
-```
-config.action_controller.permit_all_parameters = true
-```
-
 ###Enabling Flash
 
 Add the following just above the `<%= yield %>` inside your **app/views/layouts/application.html.erb**:
@@ -112,24 +104,6 @@ and then run
 bundle
 ```
 from inside your terminal.
-
-###Simple Form: (makes form creation much easier)
-
-Add to your Gemfile:
-
-```
-gem ‘simple_form’
-```
-and then run in your terminal:
-
-```
-bundle
-```
-Next, run this in your terminal. (The --bootstrap option is only for projects using Twitter Boostrap, but we happen to be doing so.)
-
-```
-rails generate simple_form:install --bootstrap
-```
 
 ##Devise
 
@@ -212,7 +186,7 @@ It's always a good idea to be constantly committing to Git and pushing to Github
 
 ```
 git add --all
-git commit -m 'installed simple_form, quiet_assets, and devise'
+git commit -m 'installed quiet_assets and devise'
 ```
 
 Obviously, you'll choose your own commit messages as appropriate for what you've just worked on. Then, don't forget to push the latest changes to Github:
@@ -243,7 +217,7 @@ This line is actually a (common) shortcut for all seven of the RESTful routes fo
                          PUT    /links/:id(.:format)           links#update
                          DELETE /links/:id(.:format)           links#destroy                         
 
-Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes", the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
+Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes" (which we will learn about), the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
 
 ##Our first controller
 Next, let’s create a links controller.
@@ -398,7 +372,7 @@ Next, let’s render 404s if link doesn’t exist. There are different approache
 
 ##Next feature
 
-Next, let’s create edit and update actions for links, and use a partial to share a form between new and edit.
+Next, let’s create edit and update actions for links.
 
 Now add links on the index page which will make the edit page, new page, and show pages easily accessible.
 
