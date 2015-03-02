@@ -361,7 +361,7 @@ Now, we just referred to a method called `visit_count` for Links. That method do
 
 ```
 def visit_count
-  self.visits.count
+  visits.count
 end
 ```
 
