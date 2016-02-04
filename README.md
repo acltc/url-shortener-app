@@ -1,4 +1,14 @@
-# Cheat Sheet for URL Shortener App:
+# URL Shortener App
+
+You will be creating a brand new Rails app that serves as a URL Shortener service. You're probably familiar with other such services such as bit.ly, but now you'll be creating your own! If you're not at all familiar with URL Shortening, check out [article](https://en.wikipedia.org/wiki/URL_shortening), but at its core, a URL Shortening solves the following problem: Imagine you have a url that you want to easily distribute (examples: on a physical paper flyer, or on Twitter) but the url is crazy long, as some urls tend to be. A URL Shortening service allows you to create a shortened url (e.g. http://mydomain.com/abcde) that when people visits it, they will be redirected to the real, longer url. This way you can simply distribute the short url, but people will end up at the right place. Another advantage of distributing shortened urls is that you can track how many people visited each one. This can be useful for marketing purposes. Imagine you have an advertisement on two different billboards, and you use a different shortened url on each. Now you can see how many people visited each url, and therefore learn which billboard is more effective.
+
+Anyway, you'll be building this very service - where a user can sign up and have the ability to create shortened urls. The one thing is that instead of these shortened urls starting with http://bit.ly/... they'll start with localhost:3000//... or whatever domain you get if you deploy this app to Heroku. If you were to create this for real, you'd acquire a very short domain name so that your complete urls remain short.
+
+This repo contains a somewhat old version of a completed version of this app. The idea is that it's here as a reference if you get stuck, but you'd try to build this on your own without looking at the source code here. 
+
+Below is a guide that will help guide you through the building of this app. Note that in some steps, the guide will walk you through some of the nitty gritty details, but in most steps, it will just tell you what to build without even giving hints.
+
+# Guide
 
 ## Create the New App
 
@@ -18,34 +28,10 @@ rake db:create
 ```
 
 ### Add Twitter Bootstrap via the gem
-Add to the Gemfile:
 
-```
-gem 'bootstrap-sass'
-```
+We're leaving out the instructions on how to do this since they change so frequently anyway with the gem's constant updates.
 
-Don't forget that whenever you add a new gem to the Gemfile, you must run the following in the terminal:
-
-```
-bundle
-```
-
-Next, make a new sheet in stylesheets called **style.css.scss** . This is the CSS that applies to the entire application.
-
-Now, make another file in stylesheets called **_external.css.scss** and put inside that file:
-
-```
-@import "bootstrap-sprockets";
-@import "bootstrap";
-```
-
-Next, add this line to **app/assets/javascripts/application.js** in order to activate the Bootstrap JavaScript functionality: (It should go right before the line about turbolinks.)
-
-```
-//= require bootstrap-sprockets
-```
-
-###Enabling Flash
+### Enabling Flash
 
 Add the following just above the `<%= yield %>` inside your **app/views/layouts/application.html.erb**:
 
@@ -59,7 +45,7 @@ Add the following just above the `<%= yield %>` inside your **app/views/layouts/
 ```
 
 
-## Git
+##Git
 
 Once and only once per project, you must tell Git to track your whole folder:
 
@@ -87,23 +73,6 @@ Next, as Github itself will tell you to do, run the following two commands from 
 git remote add origin git@github.com:your-username/url-shortener-app.git
 git push -u origin master
 ```
-
-##Optional Gems
-
-###Quiet Assets (for making your rails server log easier to read)
-
-Add to your Gemfile:
-
-```
-gem 'quiet_assets'
-```
-
-and then run
-
-```
-bundle
-```
-from inside your terminal.
 
 ##Devise
 
@@ -166,7 +135,7 @@ I will be doing this for this app. I like having the ability to sign out by ente
 
 #### Devise routes
 
-I like having two different homepages, one for users who are signed in, and another for those who are not. You may not need this for your app, but we will for ours. We will have non-signed-in users have the Sign Up page as their homepage, and we'll have signed-in users have a home page where they can see all their links. The following code *goes below* where it says `devise_for :users`.
+In some apps you may find that you need two different homepages, one for users who are signed in, and another for those who are not. This app is one such case. We will have non-signed-in users have the Sign Up page as their homepage, and we'll have signed-in users have a home page where they can see all their links. The following code *goes below* the `devise_for :users` line in your routes.rb.
 
 ```
 devise_scope :user do
@@ -186,43 +155,29 @@ It's always a good idea to be constantly committing to Git and pushing to Github
 
 ```
 git add --all
-git commit -m 'installed quiet_assets and devise'
+git commit -m 'your commit message'
 ```
 
 Obviously, you'll choose your own commit messages as appropriate for what you've just worked on. Then, don't forget to push the latest changes to Github:
 
 ```
-git push
+git push origin master
 ```
 
 ######Ok! We've just completed the basic setup of our app. Now, let's start coding!
 
+##Links
+
+Our primary resource in this app is the notion of a Link. This represents the shortened urls that a user can create and distribute. Thus, we'll have a Link model and Links controller.
 
 ##Our first routes
 
-In our **config/routes.rb**, add the following line. (This can go below all the devise/user stuff.)
-
-```
-resources :links
-```
-This line is actually a (common) shortcut for all seven of the RESTful routes for any resource. You can actually see all the routes if you run `rake routes` from your terminal. If you do run it, you'll see that the following routes now exist:
-
-
-                   links GET    /links(.:format)               links#index
-                         POST   /links(.:format)               links#create
-                new_link GET    /links/new(.:format)           links#new
-               edit_link GET    /links/:id/edit(.:format)      links#edit
-                    link GET    /links/:id(.:format)           links#show
-                         PATCH  /links/:id(.:format)           links#update
-                         PUT    /links/:id(.:format)           links#update
-                         DELETE /links/:id(.:format)           links#destroy                         
-
-Ignore the (.:format) for now, and you should understand what’s going on. There are four columns. The leftmost column contains the "named routes" (which we will learn about), the second column contains the HTTP verbs, the third column contain the URL, and the rightmost column contains the controller and action that each route triggers.
+In our **config/routes.rb**, add a route for a links index page.
 
 ##Our first controller
 Next, create a links controller.
 
-Open up this new links_controller and let’s create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource.
+Open up this new links_controller and let’s create our first action, the **index** action. Remember, the **index** action represents where you can view an overview-type list of *all* of a given resource. For now, just leave the body of the action empty, since we don't yet have our Link model.
 
 ##Our first view
 
@@ -234,7 +189,7 @@ We need a Link model so that these links can be stored in the database! Inside y
 ```
 rails generate model Link user_id:integer slug target_url
 ```
-In the above line, **Link** is the name of the model. It is followed (optionally) by the attributes that we wish to give this model. The main attributes are **slug** and **target_url**. **Slug** is the actual link that visitor will click on (for example: acltc), and the **target_url** is the actual link that the visitor will be redirected to after clicking on that link. The **user_id** attribute will allow us to set up the association that one User will have many Links.
+In the above line, **Link** is the name of the model. It is followed (optionally) by the attributes that we wish to give this model. The main attributes are **slug** and **target_url**. **Slug** is the section of the url that follows the domain name. For example, in http://bit.ly/abcde - the slug is abcde. The **target_url** is the actual url that the visitor will be redirected to after clicking on that link. The **user_id** attribute will allow us to set up the association that one User will have many Links.
 
 Inspect migration file, and if all looks good, run:
 
@@ -243,20 +198,11 @@ rake db:migrate
 ```
 in the terminal.
 
-##Associations
+##Implementing the index action
 
-Next, set up the associations between users and links: One User has many Links. Do this in the models.
+Fill in the missing code for the index action in the Links controller.
 
-Now, a user needs to be able to create a new link, so create a page with a form so they can do so.
-
-The route for this already exists (thanks to the `resources :links` inside the routes file), so create the new action and view.
-
-
-Now, implement the create action inside the links_controller. You'll want to save the link to the database and redirect to the index action.
-
-This redirects to the index action, but we haven't implemented that yet, so do so now as well.
-
-And inside the corresponding view (you'll need to create a file called **app/views/links/index.html.erb**):
+And inside the corresponding view (you'll need to create a file called **app/views/links/index.html.erb**), add the following:
 
     <h1>Your links</h1>
     
@@ -275,10 +221,21 @@ And inside the corresponding view (you'll need to create a file called **app/vie
       <% end %>
     <table>
 
-###The main feature: Having links that a visitor clicks on redirect them to some other page
+##Associations
 
+1. Next, set up the associations between users and links: One User has many Links. This code belongs in the model.
 
-Hint: You'll need a brand new route and controller action for this!
+2. Now, a user needs to be able to create a new link, so create a page with a form so they can do so. Don't forget the additional routes you'll need for this! (new and create)
+
+3. Now, implement the create action inside the links_controller. You'll want to save the link to the database and redirect to the index action. Note that we have not created a show action as of yet.
+
+###The main feature
+
+The main feature of a url shortener is that if one visits such a url, they'll be redirected to another url. You will be implementing this feature right now.
+
+Suggestion: For this feature, create a visits controller and use the create action. Essentially, we're viewing this as follows: Every time a visitor visits a shortened link - they've just "created" a visit.
+
+Hint: Take advantage of wildcard url segments to make this feature work!
 
 ##Validations
 
@@ -323,10 +280,6 @@ Track each link click!
 
 We'll need a new resource (model) called Visit.
 
-in our routes, add:
-
-    resources :visits
-
 And let’s create the model! In the terminal:
 
     rails g model Visit link_id:integer ip_address
@@ -335,22 +288,17 @@ and of course after checking the migration file:
 
     rake db:migrate
 
+Now, set up the association between links and visits so that a link has many visits.
 
-Now, set up the association between links and visits!
+Let's save each visit in the database each time a link is visited - including the ip address of visitor. 
 
-A link has many visits.
+How do we grab the ip address, you ask?
 
-Now that we have a new model called visits, we can actually consider a visitor clicking on a link as if they're creating a new visit! So we can really move our redirect action out of the links_controller and instead consider it a **create** action which we'll put in a new visits_controller, which we'll create right now as well.
-
-You'll also have to update that route accordingly.
-
-Now, in when a visit is "created", you'll create it. That is, you'll create a brand new Visit in the database each time a link is visited. You can grab the visitor's IP address with a special method available in Rails controllers:
-
-    request.remote_ip
+Well here's how: 
 
 The **request.remote_ip** method is a special method available inside Rails controllers which allows us to see a user's IP address. Pretty cool!
 
-Next, set up a link show page so a user can see number of visits for that link.
+Yet another feature: Set up a link show page so a user can see number of visits for that link.
 
 And in the view (which you'll have to create as **app/views/links/show.html.erb**):
 
