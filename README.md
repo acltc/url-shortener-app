@@ -14,8 +14,13 @@ Below is a guide that will help guide you through the building of this app. Note
 
 ## Create the New App
 
+Rails 4:
 ```
 rails new url-shortener-app --skip-test-unit -d postgresql
+```
+Rails 5:
+```
+rails new url-shortener-app --skip-test -d postgresql
 ```
 ## General Setup
 
