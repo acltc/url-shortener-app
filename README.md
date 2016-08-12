@@ -4,7 +4,9 @@ You will be creating a brand new Rails app that serves as a URL Shortener servic
 
 Anyway, you'll be building this very service - where a user can sign up and have the ability to create shortened urls. The one thing is that instead of these shortened urls starting with http://bit.ly/... they'll start with localhost:3000//... or whatever domain you get if you deploy this app to Heroku. If you were to create this for real, you'd acquire a very short domain name so that your complete urls remain short.
 
-This repo contains a somewhat old version of a completed version of this app. The idea is that it's here as a reference if you get stuck, but you'd try to build this on your own without looking at the source code here. 
+This repo contains a somewhat old version of a completed version of this app (e.g. it uses mysql instead of postgresql). The idea is that it's here as a reference if you get stuck, but you'd try to build this on your own without looking at the source code here.
+
+This guide uses Devise - a gem that integrates authentication for you. Follow the gem's instruction's here to install: https://github.com/plataformatec/devise/ or you can try integrating authentication without the gem (though the example app provided will differ then).
 
 Below is a guide that will help guide you through the building of this app. Note that in some steps, the guide will walk you through some of the nitty gritty details, but in most steps, it will just tell you what to build without even giving hints.
 
@@ -13,7 +15,7 @@ Below is a guide that will help guide you through the building of this app. Note
 ## Create the New App
 
 ```
-rails new url-shortener-app --skip-test-unit -d mysql
+rails new url-shortener-app --skip-test-unit -d postgresql
 ```
 ## General Setup
 
